@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find the Groom</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Georgia', serif;
+        background: #ffffff;
+        text-align: center;
+    }
+
+    h1 {
+        margin-top: 40px;
+        font-size: 28px;
+        letter-spacing: 1px;
+    }
+
+    .container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        margin: 40px auto;
+    }
+
+    #result {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 10px;
+    }
+
+    p {
+        font-size: 16px;
+        color: #666;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Scratch to Reveal 💍</h1>
+<p>Did you find the groom?</p>
+
+<div class="container">
+    <!-- CHANGE THIS IMAGE -->
+    <img id="result" src="winner.jpg">
+
+    <canvas id="scratch"></canvas>
+</div>
+
+<script>
+const canvas = document.getElementById("scratch");
+const ctx = canvas.getContext("2d");
+
+canvas.width = 300;
+canvas.height = 300;
+
+// Create scratch layer (gold-ish)
+ctx.fillStyle = "#d4af37";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+ctx.globalCompositeOperation = "destination-out";
+
+let isDrawing = false;
+
+function getPosition(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: (e.touches ? e.touches[0].clientX : e.clientX) - rect.left,
+        y: (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
+    };
+}
+
+function scratch(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+
+    const pos = getPosition(e);
+
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 20, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+canvas.addEventListener("mousedown", () => isDrawing = true);
+canvas.addEventListener("mouseup", () => isDrawing = false);
+canvas.addEventListener("mousemove", scratch);
+
+canvas.addEventListener("touchstart", () => isDrawing = true);
+canvas.addEventListener("touchend", () => isDrawing = false);
+canvas.addEventListener("touchmove", scratch);
+</script>
+
+</body>
+</html>
