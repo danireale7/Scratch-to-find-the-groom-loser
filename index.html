@@ -72,5 +72,69 @@ canvas {
 </style>
 </head>
 <body>
+<h1>Scratch to Reveal!</h1>
+
+<div class="subtitle">
+    <span>Did you find the groom?</span>
+</div>
+
+
+<div class="container">
+    <img id="result" src="frank.jpg" />
+    <canvas id="scratch"></canvas>
+</div>
+<div class="subtitle">
+    <span>Proudly coded and made by Danielle</span>
+</div>
+
+
+<script>
+const canvas = document.getElementById("scratch");
+const ctx = canvas.getContext("2d");
+const container = document.querySelector(".container");
+
+function resizeCanvas() {
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
+
+    // Scratch layer
+    ctx.fillStyle = "#b89b3c";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.globalCompositeOperation = "destination-out";
+}
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+let isDrawing = false;
+
+function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: (e.touches ? e.touches[0].clientX : e.clientX) - rect.left,
+        y: (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
+    };
+}
+
+function scratch(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+
+    const pos = getPos(e);
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 22, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+canvas.addEventListener("mousedown", () => isDrawing = true);
+canvas.addEventListener("mouseup", () => isDrawing = false);
+canvas.addEventListener("mousemove", scratch);
+
+canvas.addEventListener("touchstart", () => isDrawing = true);
+canvas.addEventListener("touchend", () => isDrawing = false);
+canvas.addEventListener("touchmove", scratch);
+</script>
+
 </body>
 </html>
